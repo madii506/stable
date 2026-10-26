@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STABLE</title>
+<meta name="description" content="The only stable thing about memecoins. Coins paired with the S&P 500 or the Nasdaq 100 on StonkFun, and the fees go to holders in the index.">
+<meta name="theme-color" content="#050c10">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 60'%3E%3Crect x='2' y='4' width='96' height='52' rx='26' fill='%2369aac1'/%3E%3Crect x='10' y='12' width='80' height='36' rx='18' fill='%230a2c37'/%3E%3Cline x1='38' y1='8' x2='38' y2='52' stroke='%23e6f6fb' stroke-width='4' stroke-linecap='round'/%3E%3Cline x1='62' y1='8' x2='62' y2='52' stroke='%23e6f6fb' stroke-width='4' stroke-linecap='round'/%3E%3Cellipse cx='50' cy='30' rx='9' ry='8' fill='%23e6f6fb'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root { --bg: #050c10; --bg2: #08131a; --card: #0b1820; --card2: #0f2129; --line: #172a33; --line2: #22404b; --ink: #eef6f8; --ink2: #a9c0c7; --mute: #6f8c95; --acc: #69aac1; --acc2: #b9e0ec; --up: #4ade80; --down: #f87171; --ease: cubic-bezier(.2,.8,.2,1); }
+* { box-sizing: border-box; }
+html { background: var(--bg); color: var(--ink); scroll-behavior: smooth; }
+body { margin: 0; font: 400 16px/1.55 Barlow, Inter, system-ui, sans-serif; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+.mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+.wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+.up { color: var(--up); } .down { color: var(--down); }
+/* nav */
+.nav { position: sticky; top: 0; z-index: 30; background: rgba(5,12,16,.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; align-items: center; gap: 26px; height: 58px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .14em; font-size: 15px; }
+.brand svg { width: 38px; height: 22px; }
+.links { display: flex; gap: 20px; font-size: 14px; color: var(--ink2); }
+.links a:hover { color: var(--ink); }
+.nav .right { margin-left: auto; display: flex; gap: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 16px; border-radius: 8px; font: 600 14px Barlow, sans-serif; border: 1px solid var(--line2); background: var(--card); color: var(--ink); transition: border-color .2s, background .2s, transform .2s var(--ease); cursor: pointer; }
+.btn:hover { border-color: var(--acc); transform: translateY(-1px); }
+.btn.pri { background: var(--acc); border-color: var(--acc); color: var(--bg); }
+.btn.pri:hover { background: var(--acc2); border-color: var(--acc2); }
+.btn.big { height: 46px; padding: 0 20px; font-size: 15px; }
+/* the stadium screen */
+.stadium { position: relative; height: 300px; overflow: hidden; perspective: 900px; background: radial-gradient(120% 90% at 50% 0%, #0d2530 0%, #071318 55%, var(--bg) 100%); border-bottom: 1px solid var(--line); }
+.screen { position: absolute; left: -12%; right: -12%; top: 36px; height: 230px; transform: rotateX(16deg); transform-origin: 50% 0; border-radius: 0 0 50% 50% / 0 0 22% 22%; background: #061219; box-shadow: inset 0 0 0 2px #0e2630, inset 0 -30px 60px rgba(0,0,0,.6), 0 40px 80px rgba(0,0,0,.6); overflow: hidden; }
+.screen::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(5,12,16,.95), transparent 16%, transparent 84%, rgba(5,12,16,.95)), linear-gradient(180deg, rgba(255,255,255,.04), transparent 30%); }
+.led { position: absolute; left: 0; white-space: nowrap; display: flex; will-change: transform; font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: .02em;
+  -webkit-mask-image: radial-gradient(circle at center, #000 58%, transparent 62%); -webkit-mask-size: 7px 7px; mask-image: radial-gradient(circle at center, #000 58%, transparent 62%); mask-size: 7px 7px; }
+.led.l1 { top: 18px; font-size: 92px; line-height: 1; color: #d8eef5; text-shadow: 0 0 18px rgba(185,224,236,.6); }
+.led.l2 { top: 150px; font-size: 40px; line-height: 1; color: #cfe6ee; text-shadow: 0 0 12px rgba(185,224,236,.45); }
+.led span { padding-right: 70px; }
+.led .u { color: var(--up); text-shadow: 0 0 16px rgba(74,222,128,.6); } .led .d { color: var(--down); text-shadow: 0 0 16px rgba(248,113,113,.6); } .led .a { color: var(--acc); }
+.band2 { position: absolute; left: 0; right: 0; top: 136px; height: 2px; background: #0e2630; }
+/* hero */
+.hero { padding: 54px 0 30px; }
+.hero .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: start; }
+h1 { margin: 0 0 18px; font-weight: 800; font-size: clamp(36px, 4.4vw, 56px); line-height: 1.05; letter-spacing: -.02em; }
+h1 span { color: var(--acc); }
+.lead { color: var(--ink2); font-size: 17.5px; max-width: 540px; margin: 0 0 26px; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 560px; }
+.fact { padding: 14px 16px; border-radius: 10px; background: var(--card); border: 1px solid var(--line); }
+.fact b { display: block; font-size: 24px; font-weight: 800; letter-spacing: -.01em; }
+.fact span { font-size: 12.5px; color: var(--mute); }
+.pick { border-radius: 14px; background: linear-gradient(170deg, var(--card2), var(--card)); border: 1px solid var(--line2); padding: 20px; box-shadow: 0 30px 60px rgba(0,0,0,.35); }
+.pick .ph { display: flex; justify-content: space-between; align-items: center; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); margin-bottom: 14px; }
+.opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.opt { text-align: left; padding: 14px; border-radius: 10px; border: 1px solid var(--line2); background: var(--bg2); color: var(--ink); cursor: pointer; transition: border-color .2s, background .2s; font: inherit; }
+.opt.on { border-color: var(--acc); background: rgba(105,170,193,.08); }
+.opt small { display: block; font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
+.opt b { display: block; font-size: 20px; font-weight: 800; margin: 2px 0; }
+.opt .mono { font-size: 13px; }
+.spec { border-top: 1px solid var(--line); }
+.spec div { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; color: var(--ink2); }
+.spec b { color: var(--ink); font-weight: 600; }
+.pick .btn { width: 100%; justify-content: center; margin-top: 16px; }
+.pick .note { font-size: 12.5px; color: var(--mute); margin-top: 10px; text-align: center; }
+/* sections */
+.sec { padding: 64px 0; border-top: 1px solid var(--line); }
+.kick { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--acc); font-weight: 700; margin-bottom: 10px; }
+h2 { margin: 0 0 8px; font-weight: 800; font-size: clamp(28px, 3.2vw, 40px); letter-spacing: -.02em; line-height: 1.1; }
+.sub { color: var(--ink2); margin: 0 0 30px; max-width: 620px; }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; counter-reset: s; }
+.step { padding: 22px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); position: relative; }
+.step::before { counter-increment: s; content: '0' counter(s); font: 700 12px 'JetBrains Mono', monospace; color: var(--acc); }
+.step h3 { margin: 12px 0 8px; font-size: 19px; font-weight: 700; line-height: 1.2; }
+.step p { margin: 0; color: var(--ink2); font-size: 15px; }
+.idx { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ix { padding: 24px; border-radius: 14px; background: linear-gradient(170deg, var(--card2), var(--card)); border: 1px solid var(--line2); }
+.ix .t { display: flex; justify-content: space-between; align-items: start; }
+.ix small { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); }
+.ix h3 { margin: 4px 0 0; font-size: 28px; font-weight: 800; }
+.ix .px { font: 700 30px 'JetBrains Mono', monospace; text-align: right; }
+.ix .ch { font: 700 14px 'JetBrains Mono', monospace; text-align: right; }
+.ix svg { display: block; width: 100%; height: 80px; margin: 18px 0 14px; }
+.ix .row { display: flex; gap: 24px; font-size: 14px; color: var(--ink2); }
+.ix .row b { color: var(--ink); font-weight: 700; }
+.bar2 { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+.tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg2); }
+.tabs button { border: 0; background: none; color: var(--mute); font: 600 14px Barlow, sans-serif; padding: 7px 14px; border-radius: 6px; cursor: pointer; }
+.tabs button.on { background: var(--card2); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line2); }
+.list { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.lh, .lr { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr 110px; gap: 12px; align-items: center; padding: 0 18px; }
+.lh { height: 40px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); background: var(--bg2); border-bottom: 1px solid var(--line); }
+.lr { height: 62px; border-bottom: 1px solid var(--line); font-size: 15px; transition: background .2s; }
+.lr:last-child { border-bottom: 0; }
+.lr:hover { background: rgba(105,170,193,.05); }
+.coin { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.av { flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--acc2); color: var(--bg); font-weight: 800; overflow: hidden; }
+.av img { width: 100%; height: 100%; object-fit: cover; }
+.coin b { display: block; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.coin small { color: var(--mute); font-size: 13px; }
+.pay { justify-self: end; font: 700 12.5px 'JetBrains Mono', monospace; padding: 6px 10px; border-radius: 7px; background: var(--acc); color: var(--bg); }
+.empty { padding: 34px; text-align: center; color: var(--mute); }
+.skel { height: 62px; border-bottom: 1px solid var(--line); background: linear-gradient(90deg, transparent, rgba(105,170,193,.05), transparent); background-size: 200% 100%; animation: sk 1.3s infinite; }
+@keyframes sk { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+.src { margin-top: 12px; font-size: 12.5px; color: var(--mute); }
+.faq details { border-bottom: 1px solid var(--line); padding: 18px 0; }
+.faq details:first-of-type { border-top: 1px solid var(--line); }
+.faq summary { cursor: pointer; list-style: none; font-weight: 700; font-size: 18px; display: flex; justify-content: space-between; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: '+'; color: var(--acc); font-size: 22px; line-height: 1; transition: transform .3s; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq p { margin: 10px 0 0; color: var(--ink2); max-width: 760px; }
+.end { padding: 70px 0 90px; border-top: 1px solid var(--line); text-align: center; }
+.end h2 { font-size: clamp(30px, 4vw, 50px); }
+.end p { color: var(--ink2); margin: 6px 0 24px; }
+.rv { opacity: 0; transform: translateY(18px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.rv.in { opacity: 1; transform: none; }
+@media (max-width: 900px) {
+  .hero .wrap, .idx { grid-template-columns: 1fr; } .steps { grid-template-columns: 1fr 1fr; } .links { display: none; }
+  .lh { display: none; } .lr { grid-template-columns: 1fr auto; height: auto; padding: 14px 16px; row-gap: 4px; } .lr .c3, .lr .c4 { display: none; }
+  .stadium { height: 220px; } .led.l1 { font-size: 64px; } .led.l2 { font-size: 28px; top: 112px; } .screen { height: 170px; } .band2 { top: 100px; }
+}
+@media (max-width: 520px) { .steps, .facts { grid-template-columns: 1fr; } .nav .right .btn:not(.pri) { display: none; } }
+@media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<header class="nav"><div class="wrap">
+  <a class="brand" href="#"><svg viewBox="0 0 100 60"><rect x="2" y="4" width="96" height="52" rx="26" fill="#69aac1"/><rect x="10" y="12" width="80" height="36" rx="18" fill="#0a2c37"/><line x1="38" y1="8" x2="38" y2="52" stroke="#e6f6fb" stroke-width="4" stroke-linecap="round"/><line x1="62" y1="8" x2="62" y2="52" stroke="#e6f6fb" stroke-width="4" stroke-linecap="round"/><ellipse cx="50" cy="30" rx="9" ry="8" fill="#e6f6fb"/></svg>STABLE</a>
+  <nav class="links"><a href="#how">How it works</a><a href="#index">The index</a><a href="#coins">Coins</a><a href="#faq">FAQ</a></nav>
+  <div class="right"><a class="btn" href="#coins">Explore coins</a><a class="btn pri" href="https://www.stonkfun.xyz/" target="_blank" rel="noopener">Launch a coin</a></div>
+</div></header>
+
+<div class="stadium" aria-hidden="true"><div class="screen"><div class="led l1" id="led1"></div><div class="band2"></div><div class="led l2" id="led2"></div></div></div>
+
+<section class="hero"><div class="wrap">
+  <div class="rv">
+    <h1>Memecoins paired with the index.<br><span>The fees go to holders, in the S&amp;P 500.</span></h1>
+    <p class="lead">The only stable thing about memecoins. Every coin launches on StonkFun against the S&amp;P 500 or the Nasdaq 100, as a reward coin. A small tax on every trade is paid to everyone holding it, in the index.</p>
+    <div class="facts"><div class="fact"><b id="fSpy">—</b><span>coins already paying in SPYx</span></div><div class="fact"><b id="fQqq">—</b><span>coins already paying in QQQx</span></div><div class="fact"><b>2</b><span>indexes. Nothing else.</span></div></div>
+  </div>
+  <div class="pick rv" id="pick">
+    <div class="ph"><span>pick your index</span><span class="mono" id="pTime">live</span></div>
+    <div class="opts">
+      <button class="opt on" data-k="SPYX"><small>S&amp;P 500</small><b>SPYx</b><span class="mono" id="oSpy">—</span></button>
+      <button class="opt" data-k="QQQX"><small>Nasdaq 100</small><b>QQQx</b><span class="mono" id="oQqq">—</span></button>
+    </div>
+    <div class="spec"><div><span>Pair</span><b id="sPair">SPYx · S&amp;P 500</b></div><div><span>Fee model</span><b>Reward coin</b></div><div><span>Holders get paid in</span><b id="sPaid">SPYx</b></div><div><span>Launches on</span><b>StonkFun</b></div></div>
+    <a class="btn pri big" href="https://www.stonkfun.xyz/" target="_blank" rel="noopener">Launch on StonkFun ↗</a>
+    <div class="note">On StonkFun: pick <b id="nPick">SPYx</b> as the pair and choose the reward fee model.</div>
+  </div>
+</div></section>
+
+<section class="sec" id="how"><div class="wrap">
+  <div class="kick">How it works</div>
+  <h2 class="rv">Degen on the chart. Boomer in the payout.</h2>
+  <p class="sub rv">Four things happen, and none of them need you after launch.</p>
+  <div class="steps">
+    <div class="step rv"><h3>The coin launches paired with the index</h3><p>On StonkFun, against SPYx (S&amp;P 500) or QQQx (Nasdaq 100). The pair can't change.</p></div>
+    <div class="step rv"><h3>Every trade leaves a small tax</h3><p>Reward coins carry a transfer tax on every buy and sell. It goes to holders, not to the dev.</p></div>
+    <div class="step rv"><h3>The tax is paid in the index</h3><p>Because the coin trades against the index, the payout is the index itself.</p></div>
+    <div class="step rv"><h3>Holders collect it, pro rata</h3><p>The more you hold, the bigger your share. The meme does what memes do. The payout is the S&amp;P.</p></div>
+  </div>
+</div></section>
+
+<section class="sec" id="index"><div class="wrap">
+  <div class="kick">The index</div>
+  <h2 class="rv">Two indexes. Nothing else.</h2>
+  <p class="sub rv">Live prices of the two pairs every STABLE coin pays in, and how many reward coins on StonkFun already pay in each.</p>
+  <div class="idx">
+    <div class="ix rv"><div class="t"><div><small>S&amp;P 500</small><h3>SPYx</h3></div><div><div class="px" id="xSpy">—</div><div class="ch" id="cSpy">—</div></div></div>
+      <div class="row"><span>paying in it <b id="nSpy">—</b></span><span>500 companies</span></div></div>
+    <div class="ix rv"><div class="t"><div><small>Nasdaq 100</small><h3>QQQx</h3></div><div><div class="px" id="xQqq">—</div><div class="ch" id="cQqq">—</div></div></div>
+      <div class="row"><span>paying in it <b id="nQqq">—</b></span><span>100 companies</span></div></div>
+  </div>
+</div></section>
+
+<section class="sec" id="coins"><div class="wrap">
+  <div class="kick">Coins</div>
+  <div class="bar2"><div><h2 class="rv">Coins paying in the index.</h2><p class="sub rv" style="margin:0">Reward coins on StonkFun paired with SPYx or QQQx, live from StonkFun's public API.</p></div>
+    <div class="tabs" id="tabs"><button data-k="SPYX" class="on">S&amp;P 500</button><button data-k="QQQX">Nasdaq 100</button></div></div>
+  <div class="list"><div class="lh"><span>Coin</span><span>Market cap</span><span>24h volume</span><span>Status</span><span style="text-align:right">Pays in</span></div><div id="rows"></div></div>
+  <div class="src mono" id="src"></div>
+</div></section>
+
+<section class="sec faq" id="faq"><div class="wrap">
+  <div class="kick">FAQ</div>
+  <h2 class="rv" style="margin-bottom:22px">Questions.</h2>
+  <details open><summary>What is STABLE?</summary><p>Memecoins paired with the index. Every STABLE coin launches on StonkFun against the S&amp;P 500 (SPYx) or the Nasdaq 100 (QQQx) as a reward coin, so the tax on every trade is paid to holders in the index.</p></details>
+  <details><summary>Is the coin itself stable?</summary><p>No. It's a memecoin and moves like one. The only stable part is what it pays you: the index.</p></details>
+  <details><summary>Where do the numbers come from?</summary><p>Coin counts, market caps and volume are read live from StonkFun's public API. Index prices come from Jupiter.</p></details>
+  <details><summary>Is STABLE part of StonkFun?</summary><p>No. STABLE is independent and built on StonkFun.</p></details>
+</div></section>
+
+<section class="end"><div class="wrap"><h2 class="rv">The only stable thing about memecoins.</h2><p class="rv">Pair it with the index. Make it a reward coin. Launch it on StonkFun.</p><a class="btn pri big" href="https://www.stonkfun.xyz/" target="_blank" rel="noopener">Launch a coin ↗</a></div></section>
+
+<script>
+const IX = { SPYX: { mint: 'XsoCS1TfEyfFhfvj8EtZ528L3CaKBDBRqRapnBbDF2W', name: 'S&P 500', sym: 'SPYx' }, QQQX: { mint: 'Xs8S1uUs1zvS2p7iwtsG3b6fkhpvmwz4GYU3gWAmWHZ', name: 'NASDAQ 100', sym: 'QQQx' } };
+const SF = 'https://www.stonkfun.xyz/api/public/v1/tokens';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+const usd = v => v == null ? '—' : v >= 1e9 ? '$' + (v / 1e9).toFixed(2) + 'B' : v >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M' : v >= 1e3 ? '$' + (v / 1e3).toFixed(1) + 'K' : '$' + Math.round(v);
+const pct = v => v == null ? '—' : (v >= 0 ? '▲' : '▼') + Math.abs(v).toFixed(2) + '%';
+const BAD = /fuck|shit|cunt|n[i1]gg|fag|retard|porn|\bsex|\bcum|rape|nazi|hitler|kkk|pedo|whore|slut|dick|cock|pussy|bitch/i;
+let PRICE = {}, COUNT = {}, TOP = [], ICONS = {}, TAB = 'SPYX';
+function countTo(el, to, fmt) { const t0 = performance.now(); const f = n => { const k = Math.min(1, (n - t0) / 1200), e = 1 - Math.pow(1 - k, 4); el.textContent = fmt(to * e); if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }
+async function prices() {
+  try { const j = await (await fetch('https://lite-api.jup.ag/tokens/v2/search?query=' + IX.SPYX.mint + ',' + IX.QQQX.mint)).json();
+    for (const t of j) for (const k in IX) if (IX[k].mint === t.id) PRICE[k] = { p: t.usdPrice, c: t.stats24h?.priceChange }; } catch (e) {}
+  for (const [k, a, b, c] of [['SPYX', '#oSpy', '#xSpy', '#cSpy'], ['QQQX', '#oQqq', '#xQqq', '#cQqq']]) { const P = PRICE[k]; if (!P) continue;
+    $(a).innerHTML = `$${P.p.toFixed(2)} <span class="${P.c >= 0 ? 'up' : 'down'}">${pct(P.c)}</span>`; $(b).textContent = '$' + P.p.toFixed(2); $(c).textContent = pct(P.c); $(c).className = 'ch ' + (P.c >= 0 ? 'up' : 'down'); }
+  $('#pTime').textContent = 'live · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+async function counts() {
+  for (const k in IX) { try { const j = await (await fetch(`${SF}?mode=reward&pageSize=1&quoteMint=${IX[k].mint}`)).json(); COUNT[k] = j.data?.pagination?.total ?? null; } catch (e) {} }
+  if (COUNT.SPYX != null) { countTo($('#fSpy'), COUNT.SPYX, n => Math.round(n).toLocaleString('en-US')); $('#nSpy').textContent = COUNT.SPYX.toLocaleString('en-US') + ' coins'; }
+  if (COUNT.QQQX != null) { countTo($('#fQqq'), COUNT.QQQX, n => Math.round(n).toLocaleString('en-US')); $('#nQqq').textContent = COUNT.QQQX.toLocaleString('en-US') + ' coins'; }
+}
+async function coins(k) {
+  $('#rows').innerHTML = Array.from({ length: 6 }, () => '<div class="skel"></div>').join('');
+  try {
+    const j = await (await fetch(`${SF}?mode=reward&pageSize=20&sort=volume&quoteMint=${IX[k].mint}`)).json();
+    const list = (j.data?.tokens || []).filter(c => !BAD.test((c.name || '') + ' ' + (c.symbol || '')));
+    if (k === 'SPYX' || !TOP.length) TOP = TOP.concat(list.slice(0, 8).map(c => ({ ...c, _ix: IX[k].sym })));
+    render(list, k);
+    try { const q = await fetch('https://lite-api.jup.ag/tokens/v2/search?query=' + list.map(c => c.mint).join(',')); if (q.ok) { for (const t of await q.json()) if (t.icon) ICONS[t.id] = t.icon; render(list, k); } } catch (e) {}
+    $('#src').textContent = `StonkFun public API · reward coins paired with ${IX[k].sym} · sorted by 24h volume · ${new Date().toLocaleTimeString()}`;
+  } catch (e) { $('#rows').innerHTML = `<div class="empty">StonkFun isn't answering right now. Try again in a moment.</div>`; }
+}
+function render(list, k) {
+  if (!list.length) { $('#rows').innerHTML = '<div class="empty">No reward coins paired with this index right now.</div>'; return; }
+  $('#rows').innerHTML = list.map(c => `<a class="lr" href="https://www.stonkfun.xyz/token/${encodeURIComponent(c.mint)}" target="_blank" rel="noopener">
+    <span class="coin">${ICONS[c.mint] ? `<span class="av"><img src="${esc(ICONS[c.mint])}" alt="" loading="lazy" referrerpolicy="no-referrer"></span>` : `<span class="av">${esc((c.symbol || '?')[0])}</span>`}<span style="min-width:0"><b>$${esc(c.symbol)}</b><small>${esc((c.name || '').slice(0, 28))}</small></span></span>
+    <span class="mono">${usd(c.market?.marketCapUsd)}</span><span class="mono c3">${usd(c.market?.volume24hUsd)}</span><span class="c4">${c.status === 'graduated' ? 'Graduated' : c.status === 'aboutToGraduate' ? 'Almost there' : 'On curve'}</span><span class="pay">${IX[k].sym}</span></a>`).join('');
+}
+// the stadium screen: index prices and counts on top, the coins paying in them underneath
+function led() {
+  const top = Object.keys(IX).map(k => { const P = PRICE[k]; return `<span>${IX[k].name} <span class="a">${IX[k].sym}</span> ${P ? '$' + P.p.toFixed(2) : ''} ${P ? `<span class="${P.c >= 0 ? 'u' : 'd'}">${pct(P.c)}</span>` : ''}</span>`; }).join('') + `<span>THE ONLY STABLE THING ABOUT MEMECOINS</span>`;
+  const bot = TOP.length ? TOP.map(c => `<span>$${esc(c.symbol)} <span class="a">PAYS IN ${c._ix}</span> ${usd(c.market?.marketCapUsd)}</span>`).join('') : `<span>${COUNT.SPYX ?? '…'} COINS PAY IN SPYx</span><span>${COUNT.QQQX ?? '…'} COINS PAY IN QQQx</span>`;
+  $('#led1').innerHTML = top + top + top; $('#led2').innerHTML = bot + bot + bot;
+}
+let x1 = 0, x2 = 0;
+(function run() { const a = $('#led1'), b = $('#led2'); const w1 = a.scrollWidth / 3, w2 = b.scrollWidth / 3;
+  if (w1) { x1 -= 1.1; if (-x1 >= w1) x1 += w1; a.style.transform = `translateX(${x1}px)`; } if (w2) { x2 -= 1.6; if (-x2 >= w2) x2 += w2; b.style.transform = `translateX(${x2}px)`; } requestAnimationFrame(run); })();
+// pick your index
+document.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => { document.querySelectorAll('.opt').forEach(x => x.classList.toggle('on', x === b)); const k = b.dataset.k;
+  $('#sPair').innerHTML = `${IX[k].sym} · ${IX[k].name === 'NASDAQ 100' ? 'Nasdaq 100' : 'S&amp;P 500'}`; $('#sPaid').textContent = IX[k].sym; $('#nPick').textContent = IX[k].sym; }));
+$('#tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; TAB = b.dataset.k; document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b)); coins(TAB); });
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
+(async () => { led(); await Promise.all([prices(), counts()]); led(); await coins('SPYX'); led(); })();
+setInterval(() => { if (!document.hidden) { prices().then(led); } }, 60000);
+</script>
+</body>
+</html>
